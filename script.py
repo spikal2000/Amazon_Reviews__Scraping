@@ -17,15 +17,24 @@ def getAmazonSearch(query):
 
 
 #Get context of individual product pages with data-asin 
-def findAsin(asin):
+def searchAsin(asin):
     url = "https://www.amazon.com/dp/" + asin
-    page = requests.get(url, cookies = cookie, headers = header)
+    page = requests.get(url, headers = header)
     return page
+
+def getProductNames(asin):
+    url = "https://www.amazon.com/dp/" + asin
+    page = requests.get(url, headers = header)
+    soup = BeautifulSoup(page.content)
+    
+    for i in soup.findAll("span", {'class': 'a-size-large product-title-word-break'}):
+        product_name = i.text
+    return product_name
 
 #to see all Reviews link and extract content
 def searchReviews(reviewLink):
     url = "https://www.amazon.com" + reviewLink
-    page = requests.get(url, cookies = cookie, headers = header)
+    page = requests.get(url, headers = header)
     return page
 
 # building the URL:
@@ -39,7 +48,6 @@ query = "graphics+cards"
 header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36 ',
           'referer': 'https://www.amazon.com/s?k=graphics+cards&ref=nb_sb_noss'}
 page = getAmazonSearch(query)
-cookie = page.cookies
 #page.text
 #page.cookies
 
@@ -48,13 +56,13 @@ cookie = page.cookies
 
 soup = BeautifulSoup(page.content)
 #Extract the product names
-product_names = []
-for i in soup.findAll("span", {'class': 'a-size-medium a-color-base a-text-normal'}):
-    product_names.append(i.text)
+#for i in soup.findAll("span", {'class': 'a-size-medium a-color-base a-text-normal'}):
+#    product_names.append(i.text)
 
 #extract the asin numbers 
 asins = []
 for i in soup.findAll("div", {'class': 's-result-item s-asin sg-col-0-of-12 sg-col-16-of-20 sg-col s-widget-spacing-small sg-col-12-of-16'}):
     asins.append(i['data-asin'])
-
-
+product_names = []
+for i in range(0, len(asins)):
+    product_names.append(getProductNames(asins[i]))
