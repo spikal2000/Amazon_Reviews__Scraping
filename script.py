@@ -27,7 +27,7 @@ def getProductNames(asin):
     url = "https://www.amazon.com/dp/" + asin
     page = requests.get(url, headers = header)
     soup = BeautifulSoup(page.content, "lxml")
-    
+    product_name = " "
     for i in soup.findAll("span", {'class': 'a-size-large product-title-word-break'}):
         product_name = i.text
     return product_name
@@ -44,7 +44,7 @@ query = "graphics+cards"
 #url = amazon_url + query
 
 #Without the header amazon will not give me access
-header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.93 Safari/537.36 ',
+header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.20 Safari/537.36 ',
           'referer': 'https://www.amazon.com/s?k=graphics+cards&ref=nb_sb_noss'}
 
 #
@@ -67,25 +67,29 @@ products = []
 for i in range(0, len(asins)):
     products.append(getProductNames(asins[i]))
     
-'''    
+    
 links = {}
-for i in range(len(asins)):
+for i in range(0,len(asins)):
     page = searchAsin(asins[i])
     soup = BeautifulSoup(page.content, "lxml")
-    for j in soup.find("a", {'data-hook': "see-all-reviews-link-foot"}):
+    for j in soup.findAll("a", {'data-hook': "see-all-reviews-link-foot"}):
         links[asins[i]] = j['href']
-    '''    
         
-'''
 
-reviews = []
-for i in range(len(links)):
-    for j in range(2):
-        page = searchReviews(links[i] + '&pageNumber=' + str(j))
+        
+
+
+reviews = {}
+for key, value in links.items():
+    for j in range(10):
+        page = searchReviews(value + '&pageNumber=' + str(j))
         soup = BeautifulSoup(page.content, "lxml")
         for k in soup.findAll("span", {'data-hook' : 'review-body'}):
-            reviews.append(k.text)
-'''
+            if key not in reviews.keys():
+                reviews[key] = [k.text]
+            else:
+                reviews[key].append(k.text)
+
 
 #p_a_df = pd.DataFrame({'data-asin':asins, 'product':products})
 
