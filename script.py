@@ -107,8 +107,8 @@ for asin in reviews.keys():
         
 
 #p_a_df = pd.DataFrame({'data-asin':asins, 'product':products})
-products_df = pd.DataFrame({'asins': products.keys(), 'products': products.values()})
-reviews_df = pd.DataFrame({'asin':keys, 'product':values})
+products_df = pd.DataFrame({'asin': products.keys(), 'product': products.values()})
+reviews_df = pd.DataFrame({'asin':keys, 'review':values})
 
 products_df.to_csv('products.csv') #comma seperation
 reviews_df.to_csv('reviews.csv')
