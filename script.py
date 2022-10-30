@@ -55,7 +55,7 @@ header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/5
 #&page=4&qid=1666777740&ref=sr_pg_4
 #extract the asin numbers 
 asins = []
-for j in range(3):
+for j in range(1):
     page = getAmazonSearch(query + '&page='+ str(j) + '&qid=1666777740&ref=sr_pg_'+ str(j))
     soup = BeautifulSoup(page.content, "lxml") 
     for i in soup.findAll("div", {'class': 's-result-item s-asin sg-col-0-of-12 sg-col-16-of-20 sg-col s-widget-spacing-small sg-col-12-of-16'}):
@@ -73,12 +73,9 @@ for i in range(0,len(asins)):
         links[asins[i]] = j['href']
         
 
-        
-
-
 reviews = {}
 for key, value in links.items():
-    for j in range(10):
+    for j in range(1):
         page = searchReviews(value + '&pageNumber=' + str(j))
         soup = BeautifulSoup(page.content, "lxml")
         for k in soup.findAll("span", {'data-hook' : 'review-body'}):
@@ -107,16 +104,11 @@ for asin in reviews.keys():
         
 
 #p_a_df = pd.DataFrame({'data-asin':asins, 'product':products})
-products_df = pd.DataFrame({'asin': products.keys(), 'product': products.values()})
-reviews_df = pd.DataFrame({'asin':keys, 'review':values})
-
+products_df = pd.DataFrame({'asin': products.keys(), 'product': products.values()}).set_index('asin')
+reviews_df = pd.DataFrame({'asin':keys, 'review':values}).set_index('asin')
+#new_df = products_df.merge(reviews_df, on='asins')
 products_df.to_csv('products.csv') #comma seperation
 reviews_df.to_csv('reviews.csv')
-
-
-
-
-
 
 
 
