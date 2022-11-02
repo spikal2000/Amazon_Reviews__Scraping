@@ -97,7 +97,7 @@ for i in reviews:
 
 #extract csv file
 fieldNames = ['asic', 'review']
-with open('test.csv', 'w', encoding='UTF8') as csvfile:
+with open('reviews.csv', 'w', encoding='UTF8', newline='') as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames = fieldNames)
     writer.writeheader()
     writer.writerows(temp_reviews)
